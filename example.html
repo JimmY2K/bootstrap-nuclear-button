@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>Nuclear Button for Bootstrap by Twitter</title>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <style type="text/css">
+    #box {
+      margin-top: 20px;
+      padding: 50px 20px;
+      text-align: center;
+      background-color: #DDD;
+      border-radius: 10px;
+
+    }
+  </style>
+</head>
+<body>
+	<div class="container">
+    <div class="row">
+      <div id="box" class="span5 offset3">
+    		<button id="test" class="btn btn-large btn-primary"/>Launch nuclear</button>
+      </div>
+    </div>
+	</div>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/nuclear.js"></script>
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$("#test").nuclear({
+    			alertText: "Proceed launching nuclear",
+    			onClick: function () {
+    				alert('boom!');
+    			},
+                useOnce: true
+    		});
+    	});
+    </script>
+</body>
+</html>
