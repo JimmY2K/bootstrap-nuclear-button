@@ -1,5 +1,5 @@
 /* ============================================================
- * Nuclear Button 1.0 for Bootstrap by Twitter
+ * Nuclear Button 1.1 for Bootstrap by Twitter
  * ============================================================
  * Copyright (C) 2013 Federico Parodi <federico.parodi@welaika.com>
 
