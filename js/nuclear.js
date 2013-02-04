@@ -22,7 +22,7 @@
     this.$element = $(element)
     this.options = $.extend({}, options)
     this.options.originalTitle = this.$element.html()
-    this.state = NuclearButton.prototype.STATUSES.SECURE;
+    this.state = NuclearButton.prototype.STATES.SECURE;
     this.originalWidth = ""
     this.originalHeight = ""
     if (typeof this.options.onClick=='undefined')
@@ -31,7 +31,7 @@
       }
   }
 
-  NuclearButton.prototype.STATUSES = {
+  NuclearButton.prototype.STATES = {
     SECURE: 1,
     ARMED: 2
   }
@@ -41,15 +41,15 @@
   }
 
   NuclearButton.prototype.isSecure = function() {
-    return (this.state == NuclearButton.prototype.STATUSES.SECURE)
+    return (this.state == NuclearButton.prototype.STATES.SECURE)
   };
 
   NuclearButton.prototype.isArmed = function() {
-    return (this.state == NuclearButton.prototype.STATUSES.ARMED)
+    return (this.state == NuclearButton.prototype.STATES.ARMED)
   };
 
   NuclearButton.prototype.arm = function() {
-    this.state = NuclearButton.prototype.STATUSES.ARMED;
+    this.state = NuclearButton.prototype.STATES.ARMED;
     if (this.options.alertText) {
       _this = this;
       clone = this.$element.clone();
@@ -60,14 +60,21 @@
       clone.remove();
       this.$element.html('');
       this.$element.css('width', this.originalWidth);
-      this.$element.css('height', this.originalHeight);
+      this.$element.css('height', this.originalHeight); 
       this.$element.animate(
         {
           width: newWidth,
         }, 200, function() {
-          _this.setTitle(_this.options.alertText);
           _this.$element.addClass("btn-danger");
-          _this.$element.css('width','');
+
+          if (_this.options.delay > 0) { 
+            _this.$element.addClass('disabled');
+            _this.refreshTimerAt(_this.options.delay);
+          }
+          else {
+            _this.setTitle(_this.options.alertText);
+            _this.$element.css('width','');
+          }
         }
       );
     }
@@ -75,8 +82,19 @@
       this.$element.addClass("btn-danger");
   };
 
+NuclearButton.prototype.refreshTimerAt = function(seconds) {
+  _this = this;
+  this.setTitle(seconds);
+  if (seconds > 0) this.timerTimeout = window.setTimeout(function() {_this.refreshTimerAt(seconds - 1);},1000);
+  else {
+    this.setTitle(_this.options.alertText);
+    this.$element.css('width','');
+    this.$element.removeClass('disabled');
+  }
+}
+
 NuclearButton.prototype.disarm = function() {
-    this.state = NuclearButton.prototype.STATUSES.SECURE;
+    this.state = NuclearButton.prototype.STATES.SECURE;
     if (this.options.alertText) {
       _this = this;
       var alertWidth = this.$element.css('width');
@@ -145,7 +163,11 @@ NuclearButton.prototype.disarm = function() {
 
   $(document).on('click.nuclear', '[data-nuclear-button!=nuclear]', function (e) {
     $('[data-nuclear-button^=nuclear]').each(function() {
-      if ($(this).data('nuclear').isArmed()) $(this).data('nuclear').disarm()
+      if ($(this).data('nuclear').isArmed()) {
+        window.clearTimeout($(this).data('nuclear').timerTimeout);
+        $(this).removeClass('disabled');
+        $(this).data('nuclear').disarm();
+      }
     });
   })
 }(window.jQuery);
