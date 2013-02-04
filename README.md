@@ -1,6 +1,10 @@
 Nuclear Button for Twitter Bootstrap
 ====================================
-Nuclear Button is a simple script that transforms a simple Bootstrap button in a special button, that requires the user to click a second time to perform the action required.
+Nuclear Button is a simple script that transforms a simple Bootstrap button in a special button, that requires user to click a second time to perform the action required.
+It's useful if you don't want to use annoying pop-up dialogs that nobody will ever read after their first appearance.
+
+After the first click, nuclear button will change its state to *armed*, it will become red, its text will change (if you want), and it will be ready for a final click.
+You can optionally set a delay, which will show a countdown before enabling the *armed* state.
 
 How to use
 ----------
@@ -31,7 +35,10 @@ Parameters
   (optional) the string that will substitute button's title after first click
 - **onClick**
 
-  function run on the second click
+  this function starts on the second click
 - **useOnce**
 
-  (optional) boolean, if true button will be disabled after the second click
+  (optional) boolean, if set to true, button will be disabled after the second click
+- **delay**
+
+  (optional) set number of seconds to wait before enabling armed button after the first click. It avoids the risk of an instinctive second click
