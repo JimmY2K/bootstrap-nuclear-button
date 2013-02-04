@@ -24,7 +24,8 @@ $('#my-awesome-button').nuclear({
   onClick: function () {
     alert('boom boom!');
   },
-  useOnce: true
+  useOnce: true,
+  delay: 3
 });
 ```
 
