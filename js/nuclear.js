@@ -105,9 +105,9 @@ NuclearButton.prototype.disarm = function() {
         {
           width: this.originalWidth
         }, 200, function() {
-          _this.setTitle(_this.options.originalTitle);
-          _this.$element.removeClass("btn-danger");
-          _this.$element.css('width','');
+          $(this).data('nuclear').setTitle($(this).data('nuclear').options.originalTitle);
+          $(this).removeClass("btn-danger");
+          $(this).css('width','');
         });
     }
     else 
@@ -125,6 +125,16 @@ NuclearButton.prototype.disarm = function() {
     }
   }
   
+  NuclearButton.prototype.disarmAll = function () {
+    $('[data-nuclear-button^=nuclear]').each(function() {
+      if ($(this).data('nuclear').isArmed()) {
+        window.clearTimeout($(this).data('nuclear').timerTimeout);
+        $(this).removeClass('disabled');
+        $(this).data('nuclear').disarm();
+      }
+    });
+  }
+
   var old = $.fn.nuclear
 
   $.fn.nuclear = function (option) {
@@ -149,6 +159,9 @@ NuclearButton.prototype.disarm = function() {
 
   $(document).on('click.nuclear', '[data-nuclear-button^=nuclear]', function (e) {
     if ($(e.target).hasClass('disabled')) return false;
+
+    NuclearButton.prototype.disarmAll();
+
     var nuclearButton = $(e.target).data('nuclear')
 
     if (nuclearButton.isSecure()) 
@@ -162,12 +175,6 @@ NuclearButton.prototype.disarm = function() {
   })
 
   $(document).on('click.nuclear', '[data-nuclear-button!=nuclear]', function (e) {
-    $('[data-nuclear-button^=nuclear]').each(function() {
-      if ($(this).data('nuclear').isArmed()) {
-        window.clearTimeout($(this).data('nuclear').timerTimeout);
-        $(this).removeClass('disabled');
-        $(this).data('nuclear').disarm();
-      }
-    });
+    NuclearButton.prototype.disarmAll();
   })
 }(window.jQuery);
