@@ -1,5 +1,5 @@
 /* ============================================================
- * Nuclear Button 1.1.1 for Bootstrap by Twitter
+ * Nuclear Button 1.1.2 for Bootstrap by Twitter
  * ============================================================
  * Copyright (C) 2013 Federico Parodi <federico.parodi@welaika.com>
 
@@ -94,6 +94,8 @@ NuclearButton.prototype.refreshTimerAt = function(seconds) {
 }
 
 NuclearButton.prototype.disarm = function() {
+    window.clearTimeout(this.timerTimeout);
+    this.$element.removeClass('disabled');
     this.state = NuclearButton.prototype.STATES.SECURE;
     if (this.options.alertText) {
       _this = this;
@@ -125,12 +127,13 @@ NuclearButton.prototype.disarm = function() {
     }
   }
   
-  NuclearButton.prototype.disarmAll = function () {
+  NuclearButton.prototype.disarmAllBut = function (buttonToBeKeptArmed) {
     $('[data-nuclear-button^=nuclear]').each(function() {
       if ($(this).data('nuclear').isArmed()) {
-        window.clearTimeout($(this).data('nuclear').timerTimeout);
-        $(this).removeClass('disabled');
-        $(this).data('nuclear').disarm();
+        if (buttonToBeKeptArmed != null) {
+          if (buttonToBeKeptArmed[0] != $(this)[0]) $(this).data('nuclear').disarm();
+        }
+        else $(this).data('nuclear').disarm();
       }
     });
   }
@@ -159,9 +162,7 @@ NuclearButton.prototype.disarm = function() {
 
   $(document).on('click.nuclear', '[data-nuclear-button^=nuclear]', function (e) {
     if ($(e.target).hasClass('disabled')) return false;
-
-    NuclearButton.prototype.disarmAll();
-
+    NuclearButton.prototype.disarmAllBut($(e.target));
     var nuclearButton = $(e.target).data('nuclear')
 
     if (nuclearButton.isSecure()) 
@@ -170,11 +171,11 @@ NuclearButton.prototype.disarm = function() {
       nuclearButton.runUserEvent();
       nuclearButton.reset();
     }
-
+    
     return false;
   })
 
   $(document).on('click.nuclear', '[data-nuclear-button!=nuclear]', function (e) {
-    NuclearButton.prototype.disarmAll();
+    NuclearButton.prototype.disarmAllBut();
   })
 }(window.jQuery);
