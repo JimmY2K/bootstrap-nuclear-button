@@ -1,5 +1,5 @@
 /* ============================================================
- * Nuclear Button 1.1.2 for Bootstrap by Twitter
+ * Nuclear Button 1.1.3 for Bootstrap by Twitter
  * ============================================================
  * Copyright (C) 2013 Federico Parodi <federico.parodi@welaika.com>
 
@@ -110,6 +110,11 @@ NuclearButton.prototype.disarm = function() {
           $(this).data('nuclear').setTitle($(this).data('nuclear').options.originalTitle);
           $(this).removeClass("btn-danger");
           $(this).css('width','');
+          if ($(this).data('nuclear').resetting) {
+            $(this).data('nuclear').resetting = false;
+            $(this).data('nuclear').runUserEvent();
+          }
+
         });
     }
     else 
@@ -120,7 +125,8 @@ NuclearButton.prototype.disarm = function() {
     return this.options.onClick();
   }
 
-  NuclearButton.prototype.reset = function () {
+  NuclearButton.prototype.resetAndRunUserEvent = function () {
+    this.resetting = true;
     this.disarm();
     if (this.options.useOnce) {
       this.$element.addClass('disabled');
@@ -168,8 +174,7 @@ NuclearButton.prototype.disarm = function() {
     if (nuclearButton.isSecure()) 
       nuclearButton.arm();
     else if (nuclearButton.isArmed()) {
-      nuclearButton.runUserEvent();
-      nuclearButton.reset();
+      nuclearButton.resetAndRunUserEvent();
     }
     
     return false;
